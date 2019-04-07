@@ -99,6 +99,45 @@ public struct LogChannel
 
         receptacle.log(entry)
     }
+    
+    /**
+     Sends a message to the log using the receiver's severity. The message uses the same format as print (Any..., separator)
+     
+     - parameter items: The items to send to the log
+     
+     - parameter separator: A string to print between each item. The default is a single space (" ").
+     
+     - parameter function: The default value provided for this parameter
+     captures the signature of the calling function. You should not provide a
+     value for this parameter.
+     
+     - parameter filePath: The default value provided for this parameter
+     captures the file path of the code issuing the call to this function.
+     You should not provide a value for this parameter.
+     
+     - parameter fileLine: The default value provided for this parameter
+     captures the line number issuing the call to this function. You should
+     not provide a value for this parameter.
+     */
+    public func message(_ items: Any..., separator: String = " ", function: String = #function, filePath: String = #file, fileLine: Int = #line)
+    {
+        let msg = getMessage(items, separator: separator)
+        message(msg, function: function, filePath: filePath, fileLine: fileLine)
+    }
+    
+    private func getMessage(_ items: [Any], separator: String) -> String {
+        var res:[String] = []
+        for item in items {
+            if let str = item as? String {
+                res.append(str)
+            } else if let conv = item as? CustomStringConvertible {
+                res.append(conv.description)
+            }
+        }
+        
+        return res.joined(separator: separator)
+    }
+    
 
     /**
      Sends an arbitrary value to the log using the receiver's severity.
