@@ -126,12 +126,16 @@ public struct LogChannel
     }
     
     private func getMessage(_ items: [Any], separator: String) -> String {
-        var res:[String] = []
+        var res: [String] = []
         for item in items {
             if let str = item as? String {
                 res.append(str)
+            } else if let error = item as? Error {
+                res.append(error.humanReadable)
             } else if let conv = item as? CustomStringConvertible {
                 res.append(conv.description)
+            } else {
+                res.append(String(describing: value))
             }
         }
         
@@ -167,5 +171,13 @@ public struct LogChannel
         let entry = LogEntry(payload: .value(value), severity: severity, callingFilePath: filePath, callingFileLine: fileLine, callingStackFrame: function, callingThreadID: threadID)
 
         receptacle.log(entry)
+    }
+}
+
+private extension Error {
+    var humanReadable: String {
+        let error = self as NSError
+        return String(format: "%@ [%d] %d %@\n%@\n%@", error.domain, error.code, error.userInfo.count,
+                      error.userInfo, error.localizedDescription, error.localizedFailureReason ?? "none")
     }
 }
