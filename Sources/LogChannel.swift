@@ -121,6 +121,10 @@ public struct LogChannel
      */
     public func message(_ items: Any..., separator: String = " ", function: String = #function, filePath: String = #file, fileLine: Int = #line)
     {
+        message(items, separator: separator, function: function, filePath: filePath, fileLine: fileLine)
+    }
+    
+    func message(_ items: [Any], separator: String = " ", function: String = #function, filePath: String = #file, fileLine: Int = #line) {
         let msg = getMessage(items, separator: separator)
         message(msg, function: function, filePath: filePath, fileLine: fileLine)
     }
@@ -179,5 +183,15 @@ private extension Error {
         let error = self as NSError
         return String(format: "%@ [%d] %d %@\n%@\n%@", error.domain, error.code, error.userInfo.count,
                       error.userInfo, error.localizedDescription, error.localizedFailureReason ?? "none")
+    }
+}
+
+extension Optional where Wrapped == LogChannel {
+    public func message(_ items: Any..., separator: String = " ", function: String = #function, filePath: String = #file, fileLine: Int = #line) {
+        self?.message(items, separator: separator, function: function, filePath: filePath, fileLine: fileLine)
+    }
+    
+    public func value(_ value: Any?, function: String = #function, filePath: String = #file, fileLine: Int = #line) {
+        self?.value(value, function: function, filePath: filePath, fileLine: fileLine)
     }
 }

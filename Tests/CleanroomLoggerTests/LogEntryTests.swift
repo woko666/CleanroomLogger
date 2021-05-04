@@ -76,4 +76,23 @@ class LogEntryTests: LoggerTestCase
         XCTAssertEqual(results["Logging a debug message"]?.severity, .debug)
         XCTAssertEqual(results["Logging a verbose message"]?.severity, .verbose)
     }
+    
+    func testLogOptional()
+    {
+        Log.error.message("Logging an optional error message", "second")
+        Log.warning.message("Logging an optional warning message")
+        Log.info.message("Logging an optional info message")
+        Log.debug.message("Logging an optional debug message")
+        Log.verbose.message("Logging an optional verbose message")
+
+        //
+        // make sure messages are logged at the level specified
+        //
+        let results = recorder.keyedMessageBuffer()
+        XCTAssertEqual(results["Logging an optional error message second"]?.severity, .error)
+        XCTAssertEqual(results["Logging an optional warning message"]?.severity, .warning)
+        XCTAssertEqual(results["Logging an optional info message"]?.severity, .info)
+        XCTAssertEqual(results["Logging an optional debug message"]?.severity, .debug)
+        XCTAssertEqual(results["Logging an optional verbose message"]?.severity, .verbose)
+    }
 }
